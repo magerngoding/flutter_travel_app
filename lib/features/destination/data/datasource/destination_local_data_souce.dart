@@ -8,30 +8,29 @@ import 'package:flutter_travel/features/destination/data/models/destination_mode
 
 const cacheAllDestinationKey = 'all_destination';
 
-abstract class DestinationLocalDataSouce {
+abstract class DestinationLocalDataSource {
   Future<List<DestinationModel>> getAll();
-  Future<bool> cahcheAll(List<DestinationModel> list);
+  Future<bool> cacheAll(List<DestinationModel> list);
 }
 
-class DestinationLocalDataSourceImpl implements DestinationLocalDataSouce {
-  final SharedPreferences prefs;
+class DestinationLocalDataSourceImpl implements DestinationLocalDataSource {
+  final SharedPreferences pref;
 
-  DestinationLocalDataSourceImpl({
-    required this.prefs,
-  });
+  DestinationLocalDataSourceImpl(this.pref);
 
   @override
-  Future<bool> cahcheAll(List<DestinationModel> list) async {
+  Future<bool> cacheAll(List<DestinationModel> list) async {
     List<Map<String, dynamic>> listMap = list.map((e) => e.toJson()).toList();
     String allDestination = jsonEncode(listMap);
-    return prefs.setString(cacheAllDestinationKey, allDestination);
+    return pref.setString(cacheAllDestinationKey, allDestination);
   }
 
   @override
   Future<List<DestinationModel>> getAll() async {
-    String? allDestinaion = prefs.getString(cacheAllDestinationKey);
-    if (allDestinaion != null) {
-      List listMap = List<Map<String, dynamic>>.from(jsonDecode(allDestinaion));
+    String? allDestination = pref.getString(cacheAllDestinationKey);
+    if (allDestination != null) {
+      List<Map<String, dynamic>> listMap =
+          List<Map<String, dynamic>>.from(jsonDecode(allDestination));
       List<DestinationModel> list =
           listMap.map((e) => DestinationModel.fromJson(e)).toList();
       return list;

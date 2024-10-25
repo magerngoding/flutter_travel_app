@@ -6,64 +6,68 @@ import 'package:flutter_travel/core/error/exceptions.dart';
 import 'package:flutter_travel/features/destination/data/models/destination_model.dart';
 import 'package:http/http.dart' as http;
 
-import '../../domain/entities/destination_entity.dart';
-
-abstract class DestinationRemoteDatasource {
-  Future<List<DestinationEntity>> all();
-  Future<List<DestinationEntity>> top();
-  Future<List<DestinationEntity>> search(String query);
+abstract class DestinationRemoteDataSource {
+  Future<List<DestinationModel>> all();
+  Future<List<DestinationModel>> top();
+  Future<List<DestinationModel>> search(String query);
 }
 
-class DestinationRemoteDatasourceImpl implements DestinationRemoteDatasource {
+class DestinationRemoteDataSourceImpl implements DestinationRemoteDataSource {
   final http.Client client;
-  DestinationRemoteDatasourceImpl(
-      this.client); // positional argument tidak menggunkan required
+
+  DestinationRemoteDataSourceImpl(this.client);
 
   @override
-  Future<List<DestinationEntity>> all() async {
+  Future<List<DestinationModel>> all() async {
     Uri url = Uri.parse('${URLs.base}/destination/all.php');
     final response = await client.get(url).timeout(
-          Duration(seconds: 3),
+          const Duration(seconds: 3),
         );
     if (response.statusCode == 200) {
       List list = jsonDecode(response.body);
       return list.map((e) => DestinationModel.fromJson(e)).toList();
     } else if (response.statusCode == 404) {
-      throw NotFoundException();
+      Map body = jsonDecode(response.body);
+      throw NotFoundException(body['message']);
+      // throw NotFoundException();
     } else {
       throw ServerException();
     }
   }
 
   @override
-  Future<List<DestinationEntity>> search(String query) async {
+  Future<List<DestinationModel>> search(String query) async {
     Uri url = Uri.parse('${URLs.base}/destination/search.php');
     final response = await client.post(url, body: {
       'query': query,
     }).timeout(
-      Duration(seconds: 3),
+      const Duration(seconds: 3),
     );
     if (response.statusCode == 200) {
       List list = jsonDecode(response.body);
       return list.map((e) => DestinationModel.fromJson(e)).toList();
     } else if (response.statusCode == 404) {
-      throw NotFoundException();
+      Map body = jsonDecode(response.body);
+      throw NotFoundException(body['message']);
+      // throw NotFoundException();
     } else {
       throw ServerException();
     }
   }
 
   @override
-  Future<List<DestinationEntity>> top() async {
+  Future<List<DestinationModel>> top() async {
     Uri url = Uri.parse('${URLs.base}/destination/top.php');
     final response = await client.get(url).timeout(
-          Duration(seconds: 3),
+          const Duration(seconds: 3),
         );
     if (response.statusCode == 200) {
       List list = jsonDecode(response.body);
       return list.map((e) => DestinationModel.fromJson(e)).toList();
     } else if (response.statusCode == 404) {
-      throw NotFoundException();
+      Map body = jsonDecode(response.body);
+      throw NotFoundException(body['message']);
+      // throw NotFoundException();
     } else {
       throw ServerException();
     }

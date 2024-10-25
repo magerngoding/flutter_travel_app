@@ -1,4 +1,4 @@
-import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
+import '../../domain/entities/destination_entity.dart';
 
 class DestinationModel extends DestinationEntity {
   const DestinationModel({
