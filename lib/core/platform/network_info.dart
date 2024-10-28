@@ -5,11 +5,11 @@ abstract class NetworkInfo {
   Future<bool> isConnected();
 }
 
-class NetworkImpl implements NetworkInfo {
+class NetworkInfoImpl implements NetworkInfo {
   final Connectivity connectivity;
-  NetworkImpl({
-    required this.connectivity,
-  });
+  NetworkInfoImpl(
+    this.connectivity,
+  );
 
   @override
   Future<bool> isConnected() async {
