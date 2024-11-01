@@ -1,13 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:extended_image/extended_image.dart';
+import 'package:d_method/d_method.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_travel/api/urls.dart';
 import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
 import 'package:flutter_travel/features/destination/presentation/bloc/top_destination/top_destination_bloc.dart';
 import 'package:flutter_travel/features/destination/presentation/widgets/circle_loading.dart';
 import 'package:flutter_travel/features/destination/presentation/widgets/text_failure.dart';
+import 'package:flutter_travel/features/destination/presentation/widgets/top_destination_image.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
@@ -259,41 +261,125 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.all(
                 Radius.circular(16.0),
               ),
-              child: ExtendedImage.network(
-                URLs.image(destination.cover),
-                fit: BoxFit.cover,
-                handleLoadingProgress: true,
-                loadStateChanged: (state) {
-                  if (state.extendedImageLoadState == LoadState.failed) {
-                    return AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Material(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16.0),
-                        ),
-                        color: Colors.grey[300],
-                        child: const Icon(
-                          Icons.broken_image,
-                          color: Colors.black,
-                        ),
-                      ),
-                    );
-                  }
-                  if (state.extendedImageLoadState == LoadState.loading) {
-                    return AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Material(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16.0),
-                        ),
-                        color: Colors.grey[300],
-                        child: CircleLoading(),
-                      ),
-                    );
-                  }
-                },
+              child: TopDestinationImage(
+                url: URLs.image(destination.cover),
               ),
             ),
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      destination.name,
+                      style: TextStyle(
+                        height: 1,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          width: 15,
+                          height: 15,
+                          alignment: Alignment.centerLeft,
+                          child: Icon(
+                            Icons.location_on,
+                            size: 15.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 4.0,
+                        ),
+                        Text(
+                          destination.location,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 15,
+                              height: 15,
+                              alignment: Alignment.centerLeft,
+                              child: Icon(
+                                Icons.fiber_manual_record,
+                                size: 110.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 4.0,
+                            ),
+                            Text(
+                              destination.category,
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      RatingBar.builder(
+                        initialRating: destination.rate,
+                        allowHalfRating: true,
+                        unratedColor: Colors.grey,
+                        itemBuilder: (context, index) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (value) {},
+                        itemSize: 15,
+                        ignoreGestures: true, // Jika diklik tidak berubah
+                      ),
+                      const SizedBox(
+                        width: 4.0,
+                      ),
+                      Text(
+                        '( ${DMethod.numberAutoDigit(destination.rate)})', // Mendeteksi apakah ada 0 dibelakang koma
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.favorite_border,
+                      size: 24.0,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
