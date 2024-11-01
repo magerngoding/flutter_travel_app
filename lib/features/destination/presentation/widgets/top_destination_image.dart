@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors
+// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors, body_might_complete_normally_nullable
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 

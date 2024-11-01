@@ -1,15 +1,18 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:d_method/d_method.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_travel/api/urls.dart';
 import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
+import 'package:flutter_travel/features/destination/presentation/bloc/all_destination/all_destination_bloc.dart';
 import 'package:flutter_travel/features/destination/presentation/bloc/top_destination/top_destination_bloc.dart';
 import 'package:flutter_travel/features/destination/presentation/widgets/circle_loading.dart';
 import 'package:flutter_travel/features/destination/presentation/widgets/text_failure.dart';
 import 'package:flutter_travel/features/destination/presentation/widgets/top_destination_image.dart';
+import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   final topDestinationController = PageController();
   refresh() {
     context.read<TopDestinationBloc>().add(OnGetTopDestination());
+    context.read<AllDestinationBloc>().add(OnGetAllDestination());
   }
 
   @override
@@ -387,6 +391,173 @@ class _HomePageState extends State<HomePage> {
   }
 
   allDestination() {
-    return SizedBox();
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "All Destination",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                "See All",
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 16.0,
+          ),
+          BlocBuilder<AllDestinationBloc, AllDestinationState>(
+            builder: (context, state) {
+              if (state is AllDestinationLoading) {
+                return CircleLoading();
+              }
+              if (state is AllDestinationFailure) {
+                return TextFailure(message: state.message);
+              }
+              if (state is AllDestinationLoaded) {
+                List<DestinationEntity> list = state.data;
+                return ListView.builder(
+                  shrinkWrap:
+                      true, // agar scroll ga bentrok jika listView lebih dari 1
+                  itemCount: list.length,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    DestinationEntity destination = list[index];
+                    return itemAllTopDestination(destination);
+                  },
+                );
+              }
+              return SizedBox(
+                height: 120,
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget itemAllTopDestination(DestinationEntity destination) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(12.0),
+            ),
+            child: ExtendedImage.network(
+              URLs.image(destination.cover),
+              fit: BoxFit.cover,
+              height: 100,
+              width: 100,
+              handleLoadingProgress: true,
+              loadStateChanged: (state) {
+                if (state.extendedImageLoadState == LoadState.failed) {
+                  return AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Material(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(16.0),
+                      ),
+                      color: Colors.grey[300],
+                      child: const Icon(
+                        Icons.broken_image,
+                        color: Colors.black,
+                      ),
+                    ),
+                  );
+                }
+                if (state.extendedImageLoadState == LoadState.loading) {
+                  return AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Material(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(16.0),
+                      ),
+                      color: Colors.grey[300],
+                      child: CircleLoading(),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+          const SizedBox(
+            width: 10.0,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  destination.name,
+                  style: TextStyle(
+                    height: 1,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  children: [
+                    RatingBar.builder(
+                      initialRating: destination.rate,
+                      allowHalfRating: true,
+                      unratedColor: Colors.grey,
+                      itemBuilder: (context, index) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (value) {},
+                      itemSize: 15,
+                      ignoreGestures: true, // Jika diklik tidak berubah
+                    ),
+                    const SizedBox(
+                      width: 4.0,
+                    ),
+                    Text(
+                      '( ${DMethod.numberAutoDigit(destination.rate)}/${NumberFormat.compact().format(destination.rateCount)})', // Mendeteksi apakah ada 0 dibelakang koma
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  destination.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    height: 1,
+                    fontSize: 14.0,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
