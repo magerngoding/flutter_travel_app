@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, body_might_complete_normally_nullable
 
 import 'package:d_method/d_method.dart';
 import 'package:extended_image/extended_image.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_travel/api/urls.dart';
+import 'package:flutter_travel/common/app_route.dart';
 import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
 import 'package:flutter_travel/features/destination/presentation/bloc/all_destination/all_destination_bloc.dart';
 import 'package:flutter_travel/features/destination/presentation/bloc/top_destination/top_destination_bloc.dart';
@@ -258,134 +259,143 @@ class _HomePageState extends State<HomePage> {
   Widget itemTopDestination(DestinationEntity destination) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(
-                Radius.circular(16.0),
-              ),
-              child: TopDestinationImage(
-                url: URLs.image(destination.cover),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            AppRoute.detailDestination,
+            arguments: destination,
+          );
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(16.0),
+                ),
+                child: TopDestinationImage(
+                  url: URLs.image(destination.cover),
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      destination.name,
-                      style: TextStyle(
-                        height: 1,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        destination.name,
+                        style: TextStyle(
+                          height: 1,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 8.0,
-                    ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 15,
+                            height: 15,
+                            alignment: Alignment.centerLeft,
+                            child: Icon(
+                              Icons.location_on,
+                              size: 15.0,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 4.0,
+                          ),
+                          Text(
+                            destination.location,
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 15,
+                                height: 15,
+                                alignment: Alignment.centerLeft,
+                                child: Icon(
+                                  Icons.fiber_manual_record,
+                                  size: 110.0,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 4.0,
+                              ),
+                              Text(
+                                destination.category,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
                     Row(
                       children: [
-                        Container(
-                          width: 15,
-                          height: 15,
-                          alignment: Alignment.centerLeft,
-                          child: Icon(
-                            Icons.location_on,
-                            size: 15.0,
-                            color: Colors.grey,
+                        RatingBar.builder(
+                          initialRating: destination.rate,
+                          allowHalfRating: true,
+                          unratedColor: Colors.grey,
+                          itemBuilder: (context, index) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
                           ),
+                          onRatingUpdate: (value) {},
+                          itemSize: 15,
+                          ignoreGestures: true, // Jika diklik tidak berubah
                         ),
                         const SizedBox(
                           width: 4.0,
                         ),
                         Text(
-                          destination.location,
+                          '( ${DMethod.numberAutoDigit(destination.rate)})', // Mendeteksi apakah ada 0 dibelakang koma
                           style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 15,
-                              height: 15,
-                              alignment: Alignment.centerLeft,
-                              child: Icon(
-                                Icons.fiber_manual_record,
-                                size: 110.0,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 4.0,
-                            ),
-                            Text(
-                              destination.category,
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.favorite_border,
+                        size: 24.0,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    children: [
-                      RatingBar.builder(
-                        initialRating: destination.rate,
-                        allowHalfRating: true,
-                        unratedColor: Colors.grey,
-                        itemBuilder: (context, index) => const Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        onRatingUpdate: (value) {},
-                        itemSize: 15,
-                        ignoreGestures: true, // Jika diklik tidak berubah
-                      ),
-                      const SizedBox(
-                        width: 4.0,
-                      ),
-                      Text(
-                        '( ${DMethod.numberAutoDigit(destination.rate)})', // Mendeteksi apakah ada 0 dibelakang koma
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.favorite_border,
-                      size: 24.0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -452,111 +462,120 @@ class _HomePageState extends State<HomePage> {
   Widget itemAllTopDestination(DestinationEntity destination) {
     return Padding(
       padding: EdgeInsets.only(bottom: 20),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(12.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            AppRoute.detailDestination,
+            arguments: destination,
+          );
+        },
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12.0),
+              ),
+              child: ExtendedImage.network(
+                URLs.image(destination.cover),
+                fit: BoxFit.cover,
+                height: 100,
+                width: 100,
+                handleLoadingProgress: true,
+                loadStateChanged: (state) {
+                  if (state.extendedImageLoadState == LoadState.failed) {
+                    return AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Material(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16.0),
+                        ),
+                        color: Colors.grey[300],
+                        child: const Icon(
+                          Icons.broken_image,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
+                  }
+                  if (state.extendedImageLoadState == LoadState.loading) {
+                    return AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Material(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16.0),
+                        ),
+                        color: Colors.grey[300],
+                        child: CircleLoading(),
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
-            child: ExtendedImage.network(
-              URLs.image(destination.cover),
-              fit: BoxFit.cover,
-              height: 100,
-              width: 100,
-              handleLoadingProgress: true,
-              loadStateChanged: (state) {
-                if (state.extendedImageLoadState == LoadState.failed) {
-                  return AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Material(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(16.0),
-                      ),
-                      color: Colors.grey[300],
-                      child: const Icon(
-                        Icons.broken_image,
-                        color: Colors.black,
-                      ),
-                    ),
-                  );
-                }
-                if (state.extendedImageLoadState == LoadState.loading) {
-                  return AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Material(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(16.0),
-                      ),
-                      color: Colors.grey[300],
-                      child: CircleLoading(),
-                    ),
-                  );
-                }
-              },
+            const SizedBox(
+              width: 10.0,
             ),
-          ),
-          const SizedBox(
-            width: 10.0,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  destination.name,
-                  style: TextStyle(
-                    height: 1,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    destination.name,
+                    style: TextStyle(
+                      height: 1,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Row(
-                  children: [
-                    RatingBar.builder(
-                      initialRating: destination.rate,
-                      allowHalfRating: true,
-                      unratedColor: Colors.grey,
-                      itemBuilder: (context, index) => const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      onRatingUpdate: (value) {},
-                      itemSize: 15,
-                      ignoreGestures: true, // Jika diklik tidak berubah
-                    ),
-                    const SizedBox(
-                      width: 4.0,
-                    ),
-                    Text(
-                      '( ${DMethod.numberAutoDigit(destination.rate)}/${NumberFormat.compact().format(destination.rateCount)})', // Mendeteksi apakah ada 0 dibelakang koma
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  destination.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    height: 1,
-                    fontSize: 14.0,
-                    color: Colors.grey,
+                  const SizedBox(
+                    height: 10.0,
                   ),
-                ),
-              ],
+                  Row(
+                    children: [
+                      RatingBar.builder(
+                        initialRating: destination.rate,
+                        allowHalfRating: true,
+                        unratedColor: Colors.grey,
+                        itemBuilder: (context, index) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (value) {},
+                        itemSize: 15,
+                        ignoreGestures: true, // Jika diklik tidak berubah
+                      ),
+                      const SizedBox(
+                        width: 4.0,
+                      ),
+                      Text(
+                        '( ${DMethod.numberAutoDigit(destination.rate)}/${NumberFormat.compact().format(destination.rateCount)})', // Mendeteksi apakah ada 0 dibelakang koma
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    destination.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      height: 1,
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
