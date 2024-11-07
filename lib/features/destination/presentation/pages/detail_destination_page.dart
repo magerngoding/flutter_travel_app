@@ -67,8 +67,127 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
           const SizedBox(height: 24.0),
           details(),
           const SizedBox(height: 24.0),
+          review(),
+          const SizedBox(height: 24.0),
         ],
       ),
+    );
+  }
+
+  Widget review() {
+    List list = [
+      [
+        'Jhon Dipsy',
+        'assets/images/p1.jpg',
+        4.9,
+        'Best place',
+        '2023-01-02',
+      ],
+      [
+        'Mikael Lunch',
+        'assets/images/p2.jpg',
+        4.3,
+        'Unforgettable',
+        '2023-03-21',
+      ],
+      [
+        'Dinner Sopi',
+        'assets/images/p3.jpg',
+        5,
+        'Nice one',
+        '2023-09-02',
+      ],
+      [
+        'Loro Sepuh',
+        'assets/images/p4.jpg',
+        4.5,
+        'You should go with your family',
+        '2023-09-24',
+      ],
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Reviews",
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        ...list.map(
+          (e) {
+            return Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 15,
+                    backgroundImage: AssetImage(
+                      e[1],
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              e[0],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 4.0,
+                            ),
+                            RatingBar.builder(
+                              initialRating: e[2].toDouble(),
+                              allowHalfRating: true,
+                              unratedColor: Colors.grey,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (value) {},
+                              itemSize: 15,
+                              ignoreGestures: true, // Jika diklik tidak berubah
+                            ),
+                            Spacer(),
+                            Text(
+                              DateFormat('d MMM').format(
+                                DateTime.parse(
+                                  e[4],
+                                ),
+                              ),
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 4.0,
+                        ),
+                        Text(
+                          e[3],
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ).toList(),
+      ],
     );
   }
 
