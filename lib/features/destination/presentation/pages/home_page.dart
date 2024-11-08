@@ -131,7 +131,9 @@ class _HomePageState extends State<HomePage> {
           ),
           IconButton.filledTonal(
             // fileledTonal untuk background iconnya
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoute.searchDestination);
+            },
             icon: const Icon(
               Icons.search,
               size: 24.0,
