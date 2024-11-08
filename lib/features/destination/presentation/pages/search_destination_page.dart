@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_travel/api/urls.dart';
+import 'package:flutter_travel/common/app_route.dart';
 import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
 import 'package:flutter_travel/features/destination/presentation/bloc/search_destinaton/search_destination_bloc.dart';
 import 'package:flutter_travel/features/destination/presentation/widgets/circle_loading.dart';
+import 'package:flutter_travel/features/destination/presentation/widgets/parallax_vert_delegate.dart';
 import 'package:flutter_travel/features/destination/presentation/widgets/text_failure.dart';
 
 class SearchDestinationPage extends StatefulWidget {
@@ -28,6 +30,12 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
         .add(OnSearchDestination(edtSearch.text));
     FocusManager.instance.primaryFocus
         ?.unfocus(); // Setelah klik btn search keyboard akan hilang
+  }
+
+  @override
+  void initState() {
+    context.read<SearchDestinationBloc>().add(OnResetSearchDestination());
+    super.initState();
   }
 
   @override
@@ -79,102 +87,125 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
     );
   }
 
-  AspectRatio itemSearch(DestinationEntity destination) {
-    return AspectRatio(
-      aspectRatio: 2,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ExtendedImage.network(
-            URLs.image(destination.cover),
-            fit: BoxFit.cover,
-            width: double.infinity,
-            handleLoadingProgress: true,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.failed) {
-                return Material(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(16.0),
+  Widget itemSearch(DestinationEntity destination) {
+    final imageKey = GlobalKey();
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          AppRoute.detailDestination,
+          arguments: destination,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
+        child: AspectRatio(
+          aspectRatio: 2,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Builder(builder: (context) {
+                return Flow(
+                  delegate: ParallaxVertDelegate(
+                    scrollable: Scrollable.of(context),
+                    listItemContext: context,
+                    backgroundImageKey: imageKey,
                   ),
-                  color: Colors.grey[300],
-                  child: const Icon(
-                    Icons.broken_image,
-                    color: Colors.black,
-                  ),
-                );
-              }
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return Material(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(16.0),
-                  ),
-                  color: Colors.grey[300],
-                  child: CircleLoading(),
-                );
-              }
-              return null;
-            },
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: AspectRatio(
-              aspectRatio: 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.black87,
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            destination.name,
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                    ExtendedImage.network(
+                      key: imageKey,
+                      URLs.image(destination.cover),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      handleLoadingProgress: true,
+                      loadStateChanged: (state) {
+                        if (state.extendedImageLoadState == LoadState.failed) {
+                          return Material(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.grey[300],
+                            child: const Icon(
+                              Icons.broken_image,
+                              color: Colors.black,
                             ),
-                          ),
-                          Text(
-                            destination.location,
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.white,
+                          );
+                        }
+                        if (state.extendedImageLoadState == LoadState.loading) {
+                          return Material(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(16.0),
                             ),
-                          ),
+                            color: Colors.grey[300],
+                            child: CircleLoading(),
+                          );
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                );
+              }),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: AspectRatio(
+                  aspectRatio: 4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black87,
+                          Colors.transparent,
                         ],
                       ),
                     ),
-                    RatingBar.builder(
-                      initialRating: destination.rate,
-                      allowHalfRating: true,
-                      unratedColor: Colors.grey,
-                      itemBuilder: (context, index) => const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      onRatingUpdate: (value) {},
-                      itemSize: 15,
-                      ignoreGestures: true, // Jika diklik tidak berubah
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                destination.name,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                destination.location,
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        RatingBar.builder(
+                          initialRating: destination.rate,
+                          allowHalfRating: true,
+                          unratedColor: Colors.grey,
+                          itemBuilder: (context, index) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (value) {},
+                          itemSize: 15,
+                          ignoreGestures: true, // Jika diklik tidak berubah
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          )
-        ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
