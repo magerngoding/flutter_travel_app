@@ -1,19 +1,15 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_travel/api/urls.dart';
-import 'package:flutter_travel/features/destination/presentation/widgets/circle_loading.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class GalleryPhoto extends StatelessWidget {
-  final List<String> images;
+import '../../../../api/urls.dart';
+import 'circle_loading.dart';
 
-  const GalleryPhoto({
-    Key? key,
-    required this.images,
-  }) : super(key: key);
+class GalleryPhoto extends StatelessWidget {
+  const GalleryPhoto({super.key, required this.images});
+  final List<String> images;
 
   @override
   Widget build(BuildContext context) {
@@ -23,21 +19,17 @@ class GalleryPhoto extends StatelessWidget {
         PhotoViewGallery.builder(
           pageController: pageController,
           itemCount: images.length,
-          scrollPhysics: BouncingScrollPhysics(),
+          scrollPhysics: const BouncingScrollPhysics(),
           loadingBuilder: (context, event) {
-            return CircleLoading();
+            return const CircleLoading();
           },
           builder: (context, index) {
             return PhotoViewGalleryPageOptions(
               imageProvider: ExtendedNetworkImageProvider(
-                URLs.image(
-                  images[index],
-                ),
+                URLs.image(images[index]),
               ),
               initialScale: PhotoViewComputedScale.contained * 0.8,
-              heroAttributes: PhotoViewHeroAttributes(
-                tag: images[index],
-              ),
+              heroAttributes: PhotoViewHeroAttributes(tag: images[index]),
             );
           },
         ),
@@ -58,7 +50,7 @@ class GalleryPhoto extends StatelessWidget {
             ),
           ),
         ),
-        Align(
+        const Align(
           alignment: Alignment.topRight,
           child: CloseButton(),
         ),

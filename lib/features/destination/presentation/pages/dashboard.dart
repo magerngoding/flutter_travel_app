@@ -1,8 +1,7 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_travel/features/destination/presentation/cubit/dashboard_cubit.dart';
+
+import '../cubit/dashboard_cubit.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -31,22 +30,21 @@ class Dashboard extends StatelessWidget {
                 backgroundColor: Colors.white,
                 surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-                destinations: context.read<DashboardCubit>().menuDashboard.map(
-                  (e) {
-                    return NavigationDestination(
-                      icon: Icon(
-                        e[1],
-                        color: Colors.grey[500],
-                      ),
-                      selectedIcon: Icon(
-                        e[1],
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      label: e[0],
-                      tooltip: e[0],
-                    );
-                  },
-                ).toList(), // read sekali panggil tipe data
+                destinations:
+                    context.read<DashboardCubit>().menuDashboard.map((e) {
+                  return NavigationDestination(
+                    icon: Icon(
+                      e[1],
+                      color: Colors.grey[500],
+                    ),
+                    label: e[0],
+                    tooltip: e[0],
+                    selectedIcon: Icon(
+                      e[1],
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  );
+                }).toList(),
               ),
             );
           },

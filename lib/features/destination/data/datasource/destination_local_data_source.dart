@@ -1,10 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:flutter_travel/core/error/exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_travel/features/destination/data/models/destination_model.dart';
+import '../../../../core/error/exceptions.dart';
+import '../models/destination_model.dart';
 
 const cacheAllDestinationKey = 'all_destination';
 

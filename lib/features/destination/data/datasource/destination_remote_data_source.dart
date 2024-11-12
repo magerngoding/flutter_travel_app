@@ -1,10 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:flutter_travel/api/urls.dart';
-import 'package:flutter_travel/core/error/exceptions.dart';
-import 'package:flutter_travel/features/destination/data/models/destination_model.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../../api/urls.dart';
+import '../../../../core/error/exceptions.dart';
+import '../models/destination_model.dart';
 
 abstract class DestinationRemoteDataSource {
   Future<List<DestinationModel>> all();

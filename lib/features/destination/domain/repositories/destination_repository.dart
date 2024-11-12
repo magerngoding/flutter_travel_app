@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_travel/core/error/failure.dart';
-import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
+
+import '../../../../core/error/failure.dart';
+import '../entities/destination_entity.dart';
 
 abstract class DestinationRepository {
   Future<Either<Failure, List<DestinationEntity>>> all();

@@ -1,24 +1,19 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors, prefer_const_literals_to_create_immutables, body_might_complete_normally_nullable
 import 'package:d_method/d_method.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
-import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
-import 'package:flutter_travel/features/destination/presentation/widgets/gallery_photo.dart';
 import 'package:intl/intl.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 
 import '../../../../api/urls.dart';
+import '../../domain/entities/destination_entity.dart';
 import '../widgets/circle_loading.dart';
+import '../widgets/gallery_photo.dart';
 
 class DetailDestinationPage extends StatefulWidget {
+  const DetailDestinationPage({super.key, required this.destination});
   final DestinationEntity destination;
-  const DetailDestinationPage({
-    Key? key,
-    required this.destination,
-  }) : super(key: key);
 
   @override
   State<DetailDestinationPage> createState() => _DetailDestinationPageState();
@@ -32,9 +27,7 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         children: [
-          SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           gallery(),
           Row(
             children: [
@@ -43,9 +36,7 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     location(),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
+                    const SizedBox(height: 4),
                     category(),
                   ],
                 ),
@@ -54,21 +45,19 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   rate(),
-                  const SizedBox(
-                    height: 4.0,
-                  ),
+                  const SizedBox(height: 4),
                   rateCount(),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 24),
           facilities(),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 24),
           details(),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 24),
           review(),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 30),
         ],
       ),
     );
@@ -108,85 +97,73 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Reviews",
+        const Text(
+          'Reviews',
           style: TextStyle(
-            fontSize: 18.0,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        ...list.map(
-          (e) {
-            return Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 15,
-                    backgroundImage: AssetImage(
-                      e[1],
-                    ),
-                  ),
-                  const SizedBox(width: 10.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              e[0],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+        ...list.map((e) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 15,
+                  backgroundImage: AssetImage(e[1]),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            e[0],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(
-                              width: 4.0,
-                            ),
-                            RatingBar.builder(
-                              initialRating: e[2].toDouble(),
-                              allowHalfRating: true,
-                              unratedColor: Colors.grey,
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                              onRatingUpdate: (value) {},
-                              itemSize: 15,
-                              ignoreGestures: true, // Jika diklik tidak berubah
-                            ),
-                            Spacer(),
-                            Text(
-                              DateFormat('d MMM').format(
-                                DateTime.parse(
-                                  e[4],
-                                ),
-                              ),
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 4.0,
-                        ),
-                        Text(
-                          e[3],
-                          style: TextStyle(
-                            color: Colors.black54,
                           ),
+                          const SizedBox(width: 4),
+                          RatingBar.builder(
+                            initialRating: e[2].toDouble(),
+                            allowHalfRating: true,
+                            unratedColor: Colors.grey,
+                            itemBuilder: (context, index) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (value) {},
+                            itemSize: 12,
+                            ignoreGestures: true,
+                          ),
+                          const Spacer(),
+                          Text(
+                            DateFormat('d MMM').format(DateTime.parse(e[4])),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        e[3],
+                        style: const TextStyle(
+                          color: Colors.black54,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          },
-        ).toList(),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
       ],
     );
   }
@@ -195,18 +172,18 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Details",
+        const Text(
+          'Details',
           style: TextStyle(
-            fontSize: 18.0,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 8),
         Text(
           widget.destination.description,
-          style: TextStyle(
-            fontSize: 16.0,
+          style: const TextStyle(
+            fontSize: 16,
             color: Colors.black54,
           ),
         ),
@@ -218,39 +195,35 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Facilities",
+        const Text(
+          'Facilities',
           style: TextStyle(
-            fontSize: 18.0,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        ...widget.destination.facilities.map(
-          (falitity) {
-            return Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.radio_button_checked,
-                    size: 15.0,
-                    color: Theme.of(context).primaryColor,
+        ...widget.destination.facilities.map((facility) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.radio_button_checked,
+                  size: 15,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  facility,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
                   ),
-                  const SizedBox(
-                    width: 4.0,
-                  ),
-                  Text(
-                    falitity,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        )
+                ),
+              ],
+            ),
+          );
+        }).toList()
       ],
     );
   }
@@ -264,17 +237,15 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
           alignment: Alignment.centerLeft,
           child: Icon(
             Icons.location_on,
-            size: 20.0,
             color: Theme.of(context).primaryColor,
+            size: 20,
           ),
         ),
-        const SizedBox(
-          width: 4.0,
-        ),
+        const SizedBox(width: 4),
         Text(
           widget.destination.location,
-          style: TextStyle(
-            fontSize: 14.0,
+          style: const TextStyle(
+            fontSize: 16,
             color: Colors.black54,
           ),
         ),
@@ -291,17 +262,15 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
           alignment: Alignment.center,
           child: Icon(
             Icons.fiber_manual_record,
-            size: 1.0,
             color: Theme.of(context).primaryColor,
+            size: 15,
           ),
         ),
-        const SizedBox(
-          width: 4.0,
-        ),
+        const SizedBox(width: 4),
         Text(
           widget.destination.category,
-          style: TextStyle(
-            fontSize: 14.0,
+          style: const TextStyle(
+            fontSize: 16,
             color: Colors.black54,
           ),
         ),
@@ -320,7 +289,7 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
       ),
       onRatingUpdate: (value) {},
       itemSize: 15,
-      ignoreGestures: true, // Jika diklik tidak berubah
+      ignoreGestures: true,
     );
   }
 
@@ -328,11 +297,10 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
     String rate = DMethod.numberAutoDigit(widget.destination.rate);
     String rateCount =
         NumberFormat.compact().format(widget.destination.rateCount);
-
     return Text(
       '$rate / $rateCount reviews',
       style: TextStyle(
-        fontSize: 14.0,
+        fontSize: 14,
         color: Colors.grey[500],
       ),
     );
@@ -340,17 +308,16 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
 
   Widget gallery() {
     List patternGallery = [
-      StaggeredTile.count(3, 3),
-      StaggeredTile.count(2, 1.5),
-      StaggeredTile.count(2, 1.5),
+      const StaggeredTile.count(3, 3),
+      const StaggeredTile.count(2, 1.5),
+      const StaggeredTile.count(2, 1.5),
     ];
-
     return StaggeredGridView.countBuilder(
-      crossAxisSpacing: 12,
+      crossAxisSpacing: 16,
       mainAxisSpacing: 16,
       crossAxisCount: 5,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: 3,
       staggeredTileBuilder: (index) {
         return patternGallery[index % patternGallery.length];
@@ -367,9 +334,7 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
               );
             },
             child: ClipRRect(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12.0),
-              ),
+              borderRadius: BorderRadius.circular(12),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -377,12 +342,12 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
                   Container(
                     color: Colors.black.withOpacity(0.3),
                     alignment: Alignment.center,
-                    child: Text(
+                    child: const Text(
                       '+ More',
                       style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
                         color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -392,9 +357,7 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
           );
         }
         return ClipRRect(
-          borderRadius: BorderRadius.all(
-            Radius.circular(12.0),
-          ),
+          borderRadius: BorderRadius.circular(12),
           child: itemGalleryImage(index),
         );
       },
@@ -411,9 +374,7 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
           return AspectRatio(
             aspectRatio: 16 / 9,
             child: Material(
-              borderRadius: BorderRadius.all(
-                Radius.circular(16.0),
-              ),
+              borderRadius: BorderRadius.circular(16),
               color: Colors.grey[300],
               child: const Icon(
                 Icons.broken_image,
@@ -426,14 +387,13 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
           return AspectRatio(
             aspectRatio: 16 / 9,
             child: Material(
-              borderRadius: BorderRadius.all(
-                Radius.circular(16.0),
-              ),
+              borderRadius: BorderRadius.circular(16),
               color: Colors.grey[300],
-              child: CircleLoading(),
+              child: const CircleLoading(),
             ),
           );
         }
+        return null;
       },
     );
   }
@@ -442,20 +402,20 @@ class _DetailDestinationPageState extends State<DetailDestinationPage> {
     return AppBar(
       title: Text(
         widget.destination.name,
-        style: TextStyle(
-          fontSize: 18.0,
+        style: const TextStyle(
+          fontSize: 18,
           fontWeight: FontWeight.w500,
         ),
       ),
       centerTitle: true,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
-        alignment: Alignment.centerLeft,
         margin: EdgeInsets.only(
           left: 20,
           top: MediaQuery.of(context).padding.top,
         ),
-        child: Row(
+        alignment: Alignment.centerLeft,
+        child: const Row(
           children: [
             BackButton(),
           ],

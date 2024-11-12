@@ -1,16 +1,15 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_travel/api/urls.dart';
-import 'package:flutter_travel/common/app_route.dart';
-import 'package:flutter_travel/features/destination/domain/entities/destination_entity.dart';
-import 'package:flutter_travel/features/destination/presentation/bloc/search_destinaton/search_destination_bloc.dart';
-import 'package:flutter_travel/features/destination/presentation/widgets/circle_loading.dart';
-import 'package:flutter_travel/features/destination/presentation/widgets/parallax_vert_delegate.dart';
-import 'package:flutter_travel/features/destination/presentation/widgets/text_failure.dart';
+
+import '../../../../api/urls.dart';
+import '../../../../common/app_route.dart';
+import '../../domain/entities/destination_entity.dart';
+import '../bloc/search_destination/search_destination_bloc.dart';
+import '../widgets/circle_loading.dart';
+import '../widgets/parallax_vert_delegate.dart';
+import '../widgets/text_failure.dart';
 
 class SearchDestinationPage extends StatefulWidget {
   const SearchDestinationPage({super.key});
@@ -22,14 +21,12 @@ class SearchDestinationPage extends StatefulWidget {
 class _SearchDestinationPageState extends State<SearchDestinationPage> {
   final edtSearch = TextEditingController();
 
-  // Fungsi search
   search() {
     if (edtSearch.text == '') return;
     context
         .read<SearchDestinationBloc>()
         .add(OnSearchDestination(edtSearch.text));
-    FocusManager.instance.primaryFocus
-        ?.unfocus(); // Setelah klik btn search keyboard akan hilang
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override
@@ -43,14 +40,17 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        padding: const EdgeInsets.only(top: 60, bottom: 80),
         color: Theme.of(context).primaryColor,
+        padding: const EdgeInsets.only(
+          top: 60,
+          bottom: 80,
+        ),
         child: buildSearch(),
       ),
       bottomSheet: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(28.0),
-          topRight: Radius.circular(28.0),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(28),
+          topRight: Radius.circular(28),
         ),
         child: Container(
           color: Colors.white,
@@ -58,7 +58,7 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
           child: BlocBuilder<SearchDestinationBloc, SearchDestinationState>(
             builder: (context, state) {
               if (state is SearchDestinationLoading) {
-                return CircleLoading();
+                return const CircleLoading();
               }
               if (state is SearchDestinationFailure) {
                 return TextFailure(message: state.message);
@@ -67,12 +67,15 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                 List<DestinationEntity> list = state.data;
                 return ListView.builder(
                   itemCount: list.length,
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     DestinationEntity destination = list[index];
                     return Container(
                       margin: EdgeInsets.only(
-                        bottom: index == list.length - 1 ? 0 : 20,
+                        left: 8,
+                        right: 8,
+                        top: index == 0 ? 20 : 10,
+                        bottom: index == list.length - 1 ? 20 : 10,
                       ),
                       child: itemSearch(destination),
                     );
@@ -113,8 +116,8 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                   ),
                   children: [
                     ExtendedImage.network(
-                      key: imageKey,
                       URLs.image(destination.cover),
+                      key: imageKey,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       handleLoadingProgress: true,
@@ -131,11 +134,9 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                         }
                         if (state.extendedImageLoadState == LoadState.loading) {
                           return Material(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(16.0),
-                            ),
+                            borderRadius: BorderRadius.circular(16),
                             color: Colors.grey[300],
-                            child: CircleLoading(),
+                            child: const CircleLoading(),
                           );
                         }
                         return null;
@@ -149,17 +150,17 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                 child: AspectRatio(
                   aspectRatio: 4,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
                         colors: [
                           Colors.black87,
                           Colors.transparent,
                         ],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
                       ),
                     ),
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(16),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -170,17 +171,17 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                             children: [
                               Text(
                                 destination.name,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
+                                style: const TextStyle(
                                   color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
                                 ),
                               ),
                               Text(
                                 destination.location,
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.white,
+                                style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 12,
                                 ),
                               ),
                             ],
@@ -196,13 +197,13 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                           ),
                           onRatingUpdate: (value) {},
                           itemSize: 15,
-                          ignoreGestures: true, // Jika diklik tidak berubah
+                          ignoreGestures: true,
                         ),
                       ],
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -212,36 +213,28 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
 
   Widget buildSearch() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 30),
       decoration: BoxDecoration(
         border: Border.all(
-          width: 1.0,
           color: Colors.grey[300]!,
+          width: 1,
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(30.0),
-        ),
+        borderRadius: BorderRadius.circular(30),
       ),
+      margin: const EdgeInsets.symmetric(horizontal: 30),
       child: Row(
         children: [
           IconButton.filledTonal(
-            // fileledTonal untuk background iconnya
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(
-              Icons.arrow_back_ios_outlined,
-              size: 24.0,
+              Icons.arrow_back,
+              size: 24,
             ),
           ),
-          const SizedBox(
-            width: 10.0,
-          ),
+          const SizedBox(width: 10),
           Expanded(
             child: TextField(
-              // isDense dan contentPadding harus akrif guys
               controller: edtSearch,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 isDense: true,
                 border: InputBorder.none,
                 hintText: 'Search destination here...',
@@ -252,21 +245,18 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                 contentPadding: EdgeInsets.all(0),
               ),
               cursorColor: Colors.white,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w400,
               ),
             ),
           ),
-          const SizedBox(
-            width: 10.0,
-          ),
+          const SizedBox(width: 10),
           IconButton.filledTonal(
-            // fileledTonal untuk background iconnya
             onPressed: () => search(),
             icon: const Icon(
               Icons.search,
-              size: 24.0,
+              size: 24,
             ),
           ),
         ],

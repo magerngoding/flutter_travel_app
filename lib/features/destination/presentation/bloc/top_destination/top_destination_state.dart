@@ -14,19 +14,17 @@ final class TopDestinationLoading extends TopDestinationState {}
 final class TopDestinationFailure extends TopDestinationState {
   final String message;
 
-  TopDestinationFailure(this.message);
+  const TopDestinationFailure(this.message);
 
   @override
-  // TODO: implement props
   List<Object> get props => [message];
 }
 
 final class TopDestinationLoaded extends TopDestinationState {
-  final List<DestinationEntity> data; // isi data ketika berhasil
+  final List<DestinationEntity> data;
 
-  TopDestinationLoaded(this.data);
+  const TopDestinationLoaded(this.data);
 
   @override
-  // TODO: implement props
   List<Object> get props => [data];
 }

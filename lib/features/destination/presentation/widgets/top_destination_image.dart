@@ -1,18 +1,14 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors, body_might_complete_normally_nullable
 import 'package:extended_image/extended_image.dart';
+
 import 'package:flutter/material.dart';
 
-import 'package:flutter_travel/features/destination/presentation/widgets/circle_loading.dart';
-import 'package:flutter_travel/features/destination/presentation/widgets/parallax_horiz_delegate.dart';
+import 'circle_loading.dart';
+import 'parallax_horiz_delegate.dart';
 
 class TopDestinationImage extends StatelessWidget {
-  final imageKey = GlobalKey();
+  TopDestinationImage({super.key, required this.url});
   final String url;
-
-  TopDestinationImage({
-    Key? key,
-    required this.url,
-  }) : super(key: key);
+  final imageKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +30,7 @@ class TopDestinationImage extends StatelessWidget {
               return AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Material(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(16.0),
-                  ),
+                  borderRadius: BorderRadius.circular(16),
                   color: Colors.grey[300],
                   child: const Icon(
                     Icons.broken_image,
@@ -49,14 +43,13 @@ class TopDestinationImage extends StatelessWidget {
               return AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Material(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(16.0),
-                  ),
+                  borderRadius: BorderRadius.circular(16),
                   color: Colors.grey[300],
-                  child: CircleLoading(),
+                  child: const CircleLoading(),
                 ),
               );
             }
+            return null;
           },
         ),
       ],
